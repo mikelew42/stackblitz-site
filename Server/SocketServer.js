@@ -43,7 +43,7 @@ export default class SocketServer {
 			"!**/.git" 
 		]);
 		
-		this.watcher = chokidar.watch("docs", {
+		this.watcher = chokidar.watch("public", {
 			ignored: (path, stats) => {
 				if (stats && stats.isDirectory()) return false; // don't ignore directories
 				return path.endsWith(".json") || path.includes(".git") || 
@@ -116,7 +116,7 @@ class Socket {
 	}
 
 	write(file, data){
-		fs.writeFile(path.resolve("./docs/", toRelativePath(file)), data, err => {
+		fs.writeFile(path.resolve("./public/", toRelativePath(file)), data, err => {
 			if (err) console.error(err);
 			else console.log("File: ", file, " written successfully.");
 		});
@@ -128,7 +128,7 @@ class Socket {
 	}
 
 	ls(dir = "./") {
-		dir = path.resolve("./docs/", toRelativePath(dir));
+		dir = path.resolve("./public/", toRelativePath(dir));
 		try {
 			this.response({ files: this.server.build_dir(dir) });
 		} catch (e){
@@ -164,7 +164,7 @@ class Socket {
 	}
 
 	rm(dir){
-		dir = path.resolve("./docs/", toRelativePath(dir));
+		dir = path.resolve("./public/", toRelativePath(dir));
 		try {
 			fs.rmSync(dir, { recursive: true });
 			this.response({ success: true });

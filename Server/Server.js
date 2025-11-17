@@ -35,11 +35,7 @@ export default class Server {
 	initialize_express_app(){
 		this.express = express;
 		this.express_app = express();
-		if (this.base){
-			this.express_app.use("/" + this.base, express.static("docs", { redirect: false }));
-		} else {
-			this.express_app.use(express.static("docs", { redirect: false }));
-		}
+		this.express_app.use(express.static("public", { redirect: false }));
         this.express_app.use((req, res, next) => {
             console.log("req.path", req.path);
 
@@ -48,7 +44,7 @@ export default class Server {
                 return res.status(404).end();
             }
 
-           res.status(404).sendFile(path.join(__dirname, '../docs', '404.html'));
+           res.sendFile(path.join(__dirname, '../public', 'index.html'));
             
         });
 	}
@@ -67,12 +63,12 @@ export default class Server {
 
 	listen(){
 		this.http_server.listen(80, '0.0.0.0', () => {
-			console.log("Listening (/docs/ -> localhost" + (this.base ? "/" + this.base + "/" : "") + ")");
+			console.log("Listening (/public/ -> localhost)");
 		});
 	}
 
 	initialize_directorize_framework(){
-		this.watcher = chokidar.watch("docs", {
+		this.watcher = chokidar.watch("public", {
 			ignored: (path, stats) => {
 				if (stats && stats.isDirectory()) return false; // ignore directories
 				return path.endsWith(".json") || path.includes(".git") || path.includes("node_modules");
@@ -105,8 +101,8 @@ export default class Server {
 		if (!this.rebuilding){
 			this.rebuilding = setTimeout(() => {
 				console.log("Rebuilding Framework Directories");
-				fs.writeFileSync("./docs/directory.json", JSON.stringify({ files: this.build_dir("./docs/") }, null, "\t"));
-				// fs.writeFileSync("./docs/framework/directory.json", JSON.stringify({ files: this.build_dir("./docs/framework/") }, null, "\t"));
+				fs.writeFileSync("./public/directory.json", JSON.stringify({ files: this.build_dir("./public/") }, null, "\t"));
+				// fs.writeFileSync("./public/framework/directory.json", JSON.stringify({ files: this.build_dir("./public/framework/") }, null, "\t"));
 				// if (!e.includes("notes")){
 					this.socket_server.changed(e);
 				// }
@@ -126,7 +122,7 @@ export default class Server {
 			// console.log(file);
 
 			new_file.name = file.name;
-			new_file.path = file.path.replace(/\\/g, '/').replace("docs/", '');
+			new_file.path = file.path.replace(/\\/g, '/').replace("public/", '');
 			new_file.full = path.join(new_file.path, new_file.name).replace(/\\/g, '/');
 			if (file.isFile()){
 				// console.log("it's a file...");
