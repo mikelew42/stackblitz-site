@@ -3,7 +3,7 @@ import "./framework/ext/CodeEditor/CodeEditor.js";
 
 app.$root.ac("page");
 
-h1("Home Page");
+h1("Home Page?");
 
 
 p.c("intro", "No bundlers, pure JavaScript.");
