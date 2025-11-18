@@ -4,5 +4,8 @@
     "chokidar": "^4.0.3",
     "express": "^5.1.0",
     "ws": "^8.18.3"
+  },
+  "scripts": {
+    "start": "node server.js"
   }
 }
